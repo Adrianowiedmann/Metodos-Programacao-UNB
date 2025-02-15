@@ -1,0 +1,15 @@
+Linguagem: C++
+
+Trabalho realizado utilizando o WSL
+
+framework de teste: Catch2 na versão: v2.13.10
+
+para utilizar cpplint, por exemplo: cpplint conta_palavras.cpp
+
+para utilizar gcov: make gcov
+
+para utilizar cppcheck: make cppcheck
+
+para utilizar valgrind: make valgrind
+
+Compilar e executar: make
