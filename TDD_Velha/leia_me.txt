@@ -1,0 +1,7 @@
+﻿O arquivo makefile foi alterado.
+
+Para rodar os testes, utilize no terminal: make test
+
+Para utilizar o verificador de cobertura (gcov), escreva no terminal: make gcov
+
+Para utilizar o verificador estático, escreva no terminal: cppcheck --enable=warning *.cpp

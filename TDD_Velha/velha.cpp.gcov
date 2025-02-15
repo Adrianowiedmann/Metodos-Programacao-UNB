@@ -1,0 +1,226 @@
+        -:    0:Source:velha.cpp
+        -:    1:// Copyright [2024] <Adriano Wiedmann>
+        -:    2:/**
+        -:    3: * \file  velha.cpp
+        -:    4: */
+        -:    5:
+        -:    6:#include "./velha.hpp"
+        -:    7:
+        -:    8:/** 
+        -:    9: * @brief Verifica se um jogador venceu o jogo
+        -:   10: * 
+        -:   11: * Esta função percorre uma matrix 3x3 e verifica se um jogador, representado por um símbolo,
+        -:   12: * venceu o jogo através da linha, coluna ou diagonal.
+        -:   13: * 
+        -:   14: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:   15: * @param simbolo Inteiro representado o símbolo do jogador que chamou a esta função.
+        -:   16: *                - Por exemplo, '1' para jogador X e '2' para jogador O.
+        -:   17: * 
+        -:   18: * @return bool Retorna 'true' se o jogador representado pelo simbolo fornecido
+        -:   19: *              venceu o jogo; caso contrário, 'false'.
+        -:   20: */
+      272:   21:bool venceu(int velha[3][3], int simbolo) {
+      912:   22:    for (int i = 0; i < 3; i++) {
+      732:   23:        if (velha[0][i] == simbolo && velha[1][i] == simbolo
+       88:   24:            && velha[2][i] == simbolo) {
+       56:   25:            return true;
+      676:   26:        } else if (velha[i][0] == simbolo && velha[i][1] == simbolo
+       80:   27:            && velha[i][2] == simbolo) {
+       36:   28:            return true;
+        -:   29:        }
+        -:   30:    }
+      180:   31:    if ((velha[0][0] == simbolo && velha[1][1] == simbolo
+    #####:   32:        && velha[2][2] == simbolo)
+      180:   33:        || (velha[0][2] == simbolo && velha[1][1] == simbolo
+       52:   34:        && velha[2][0] == simbolo)) {
+       36:   35:        return true;
+        -:   36:    }
+      144:   37:    return false;
+        -:   38:}
+        -:   39:
+        -:   40:/** 
+        -:   41: * @brief Verifica se X venceu o jogo
+        -:   42: * 
+        -:   43: * Esta função utiliza a lógica de outra função, 'venceu', para determinar
+        -:   44: * se o jogador X venceu.
+        -:   45: * 
+        -:   46: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:   47: * 
+        -:   48: * @return bool Retorna 'true' se o jogador X venceu o jogo; caso contrário, 'false'.
+        -:   49: */
+      120:   50:bool vencedorX(int velha[3][3]) {
+      120:   51:    if (venceu(velha, 1)) {
+       56:   52:        return true;
+        -:   53:    }
+       64:   54:    return false;
+        -:   55:}
+        -:   56:
+        -:   57:/** 
+        -:   58: * @brief Verifica se O venceu o jogo
+        -:   59: * 
+        -:   60: * Esta função utiliza a lógica de outra função, 'venceu', para determinar
+        -:   61: * se o jogador O venceu.
+        -:   62: * 
+        -:   63: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:   64: * 
+        -:   65: * @return bool Retorna 'true' se o jogador O venceu o jogo; caso contrário, 'false'.
+        -:   66: */
+      152:   67:bool vencedorO(int velha[3][3]) {
+      152:   68:    if (venceu(velha, 2)) {
+       72:   69:        return true;
+        -:   70:    }
+       80:   71:    return false;
+        -:   72:}
+        -:   73:
+        -:   74:/** 
+        -:   75: * @brief Conta as posições ocupados por X e O.
+        -:   76: * 
+        -:   77: * Esta função percorre o tabuleiro e conta o número de posições
+        -:   78: * ocupadas por X ou O.
+        -:   79: * Os valores são armazenados em um Array dinâmico de tamanho 2.
+        -:   80: * Índice 0 representa X e o índice 1 representa O
+        -:   81: * 
+        -:   82: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:   83: * 
+        -:   84: * @return int* Um ponteiro para um array dinâmico de tamanho 2.
+        -:   85: */
+       52:   86:int* contaPosicoes(int velha[3][3]) {
+       52:   87:	int* contador = new int[2];
+      156:   88:	for (int i = 0; i < 2; i++) {
+      104:   89:		contador[i] = 0;
+        -:   90:	}
+      208:   91:    for (int i = 0; i < 3; i++) {
+      624:   92:        for (int j = 0; j < 3; j++) {
+      468:   93:            if (velha[i][j] == 1) {
+      192:   94:                contador[0]++;
+      276:   95:            } else if (velha[i][j] == 2) {
+      168:   96:                contador[1]++;
+        -:   97:            }
+        -:   98:        }
+        -:   99:    }
+       52:  100:    return contador;
+        -:  101:}
+        -:  102:
+        -:  103:/** 
+        -:  104: * @brief Verifica se o jogo é impossivel
+        -:  105: * 
+        -:  106: * O jogo é considerado impossível se:
+        -:  107: * - A diferença entre os contadores de jogadas dos jogadores for maior que 1
+        -:  108: * ou menor que 0.
+        -:  109: * - Ambos os jogadores são vencedores simultaneamente.
+        -:  110: * - X vence, mas não teve um movimento a mais que O.
+        -:  111: * - O vence, mas não teve mesma quantidade de movimentos que X.
+        -:  112: * 
+        -:  113: * @param contador Array de dois inteiros onde:
+        -:  114: *                 - 'contador[0]' representa o número de jogadas de X.
+        -:  115: *                 - 'contador[1]' representa o número de jogadas de O.
+        -:  116: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:  117: * 
+        -:  118: * @return bool Retorna 'true' se o estado do jogo for impossível; caso contrário, 'false'.
+        -:  119: */
+       52:  120:bool ehImpossivel(int contador[2], int velha[3][3]) {
+       52:  121:    if ((contador[0] - contador[1] > 1) ||
+       48:  122:        (contador[0] - contador[1] < 0)) {
+        8:  123:        return true;
+       44:  124:    } else if (vencedorO(velha) && vencedorX(velha)) {
+        4:  125:        return true;
+       40:  126:    } else if (vencedorX(velha) && contador[0] != contador[1] + 1) {
+        4:  127:        return true;
+       36:  128:    } else if (vencedorO(velha) && contador[0] != contador[1]) {
+        4:  129:        return -2;
+        -:  130:    }
+       32:  131:    return false;
+        -:  132:}
+        -:  133:
+        -:  134:/** 
+        -:  135: * @brief Verifica se há espaços vazios no tabuleiro.
+        -:  136: * 
+        -:  137: * Se houver uma posição com o valor '0', o jogo é empate.
+        -:  138: * 
+        -:  139: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:  140: * 
+        -:  141: * @return bool Retorna 'true' houver uma posição com o valor '0'; caso contrário, 'false'.
+        -:  142: */
+       12:  143:bool posicaoVazia(int velha[3][3]) {
+       40:  144:    for (int i = 0; i < 3; i++) {
+      116:  145:        for (int j = 0; j < 3; j++) {
+       88:  146:            if (velha[i][j] == 0) {
+        4:  147:                return true;
+        -:  148:            }
+        -:  149:        }
+        -:  150:    }
+        8:  151:    return false;
+        -:  152:}
+        -:  153:
+        -:  154:/** 
+        -:  155: * @brief Verifica se o jogo é indefinido
+        -:  156: * 
+        -:  157: * O jogo é considerado indefinido se:
+        -:  158: * - Não há um vencedor e ainda há espaços vazios
+        -:  159: * 
+        -:  160: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:  161: * 
+        -:  162: * @return bool Retorna 'true' se o estado do jogo for indefinido; caso contrário, 'false'.
+        -:  163: */
+       32:  164:bool ehIndefinido(int velha[3][3]) {
+       52:  165:    if (!vencedorO(velha) && !vencedorX(velha)
+       52:  166:        && posicaoVazia(velha)) {
+        4:  167:        return true;
+        -:  168:    }
+       28:  169:    return false;
+        -:  170:}
+        -:  171:
+        -:  172:/** 
+        -:  173: * @brief Verifica se o jogo é empate
+        -:  174: * 
+        -:  175: * O jogo é considerado empatado quando:
+        -:  176: * - Não há um vencedor e não há espaços vazios
+        -:  177: * 
+        -:  178: * @param velha Matriz 3x3 representando o tabuleiro do jogo da velha.
+        -:  179: * 
+        -:  180: * @return bool Retorna 'true' se o estado do jogo é de empate; caso contrário, 'false'.
+        -:  181: */
+       28:  182:bool ehEmpate(int velha[3][3]) {
+       44:  183:    if (!vencedorO(velha) && !vencedorX(velha)
+       44:  184:        && !posicaoVazia(velha)) {
+        4:  185:        return true;
+        -:  186:    }
+       24:  187:    return false;
+        -:  188:}
+        -:  189:
+        -:  190:/** 
+        -:  191: * @brief Avalia estado atual do jogo da velha e retorna o resultado
+        -:  192: * 
+        -:  193: * O jogo é considerado empatado quando:
+        -:  194: * - Não há um vencedor e não há espaços vazios
+        -:  195: * 
+        -:  196: * @param velha Matriz 3x3 representando o estado atual do tabuleiro do jogo da velha. 
+        -:  197: *              Cada célula contém:
+        -:  198: *              - '0' para uma célula vazia,
+        -:  199: *              - '1' para uma célula ocupada pelo jogador X,
+        -:  200: *              - '2' para uma célula ocupada pelo jogador O.
+        -:  201: * 
+        -:  202: * @return int Inteiro que descreve o estado do jogo:
+        -:  203: *         - '-2': O estado do jogo é impossível.
+        -:  204: *         - '-1': O jogo está indefinido.
+        -:  205: *         - '0': O jogo terminou em empate.
+        -:  206: *         - '1': O jogador X venceu.
+        -:  207: *         - '2': O jogador O venceu.
+        -:  208: *         - '100': Código de teste.
+        -:  209: */
+       52:  210:int VerificaVelha(int velha[3][3]) {
+       52:  211:    int* contador = contaPosicoes(velha);
+       52:  212:    if (ehImpossivel(contador, velha)) {
+       20:  213:        return -2;
+        -:  214:		delete[] contador;
+       32:  215:    } else if (ehIndefinido(velha)) {
+        4:  216:        return -1;
+       28:  217:    } else if (ehEmpate(velha)) {
+        4:  218:        return 0;
+       24:  219:    } else if (vencedorX(velha)) {
+       12:  220:        return 1;
+       12:  221:    } else if (vencedorO(velha)) {
+       12:  222:        return 2;
+        -:  223:    }
+    #####:  224:    return 100; /*!< retorna zero para teste */
+        -:  225:}
